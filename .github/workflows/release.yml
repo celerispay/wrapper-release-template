@@ -3,29 +3,28 @@ name: Github Release
 on:
   workflow_call:
 
-github-release:
-    name: Github Release
-    runs-on: self-hosted
-    needs: build-publish
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: url
+jobs:
+  github-release:
+      name: Github Release
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/download-artifact@v2
+          with:
+            name: url
 
-      - id: releaseprep
-        run: |
-          cat >$CHANGELOG <<-EOD
-          Release ${GITHUB_REF#refs/tags/}
-          Download available:
-          EOD
-          cat url-* >> $CHANGELOG
-        env:
-          CHANGELOG: release.txt
+        - id: releaseprep
+          run: |
+            cat >$CHANGELOG <<-EOD
+            Release ${GITHUB_REF#refs/tags/}
+            Download available:
+            EOD
+            cat url-* >> $CHANGELOG
+          env:
+            CHANGELOG: release.txt
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          body_path: release.txt
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        - name: Release
+          uses: softprops/action-gh-release@v1
+          with:
+            body_path: release.txt
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
