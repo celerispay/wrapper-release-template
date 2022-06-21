@@ -10,7 +10,7 @@ on:
 jobs:
   envs:
     name: Gather release environments
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     outputs:
       matrix: ${{steps.env_matrix.outputs.matrix}}
     steps:
